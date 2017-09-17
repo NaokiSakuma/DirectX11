@@ -9,11 +9,12 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 //ヘッダーファイルのインクルード
-#include <windows.h>
 #include <d3d11.h>
 #include <d3dx10.h>
 #include <d3dx11.h>
 #include <d3dCompiler.h>
+#include "..\WindowManager\WindowManager.h"
+
 //必要なライブラリファイルのロード
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib,"d3dx10.lib")
@@ -38,9 +39,9 @@ struct SimpleVertex
 //Simpleシェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
 struct SIMPLESHADER_CONSTANT_BUFFER
 {
-	ALIGN16 D3DXMATRIX mW;
-	ALIGN16 float ViewPortWidth;
-	ALIGN16 float ViewPortHeight;
+	ALIGN16 D3DXMATRIX mW;			//ワールド座標
+	ALIGN16 float ViewPortWidth;	//windowの幅
+	ALIGN16 float ViewPortHeight;	//windowの高さ
 };
 //
 //class MAIN
@@ -48,11 +49,14 @@ struct SIMPLESHADER_CONSTANT_BUFFER
 class MAIN
 {
 public:
+	//コンストラクタ
 	MAIN();
+	//デストラクタ
 	~MAIN();
-	HRESULT InitWindow(HINSTANCE, INT, INT, INT, INT, LPCWSTR);
-	LRESULT MsgProc(HWND, UINT, WPARAM, LPARAM);
-	HRESULT InitD3D();
+
+	//HRESULT InitWindow(HINSTANCE, INT, INT, INT, INT, LPCWSTR);
+	//LRESULT MsgProc(HWND, UINT, WPARAM, LPARAM);
+	HRESULT InitD3D(HWND);
 	HRESULT InitModel();
 	HRESULT MakeShader(LPSTR, LPSTR, LPSTR, void**, ID3DBlob**);
 	void Loop();
@@ -60,7 +64,7 @@ public:
 	void Render();
 	void DestroyD3D();
 
-	HWND m_hWnd;
+	//HWND m_hWnd;
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pDeviceContext;
 	IDXGISwapChain* m_pSwapChain;
@@ -76,4 +80,7 @@ public:
 	ID3D11SamplerState* m_pSampler;//テクスチャーのサンプラー
 	ID3D11ShaderResourceView* m_pTexture;//テクスチャー（用意するのはリソースビューだけでいい）
 	ID3D11BlendState* m_pBlendState;
+
+
+	HWND m_testWnd;
 };

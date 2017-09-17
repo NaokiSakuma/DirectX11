@@ -11,37 +11,43 @@
 #include "MAIN.h"
 //グローバル変数
 MAIN* g_pMain = NULL;
+std::unique_ptr<WindowManager> g_pWM;
 //関数プロトタイプの宣言
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+//LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //
 //INT WINAPI WinMain(HINSTANCE hInstance,HINSTANCE,LPSTR,INT)
 //アプリケーションのエントリー関数 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, INT)
 {
 	g_pMain = new MAIN;
+	g_pWM = std::make_unique<WindowManager>();
 	if (g_pMain != NULL)
 	{
-		if (SUCCEEDED(g_pMain->InitWindow(hInstance, 0, 0, WINDOW_WIDTH,
+		if (SUCCEEDED(g_pWM->Initialize(hInstance, 0, 0, WINDOW_WIDTH,
 			WINDOW_HEIGHT, APP_NAME)))
 		{
-			if (SUCCEEDED(g_pMain->InitD3D()))
+			if (SUCCEEDED(g_pMain->InitD3D(g_pWM->GethWnd())))
 			{
 				g_pMain->Loop();
 			}
+			//通ってない
+			int a;
+			a = 0;
 		}
 		//アプリ終了
 		g_pMain->DestroyD3D();
 		delete g_pMain;
+		//delete g_pWM;
 	}
 	return 0;
 }
 //
 //LRESULT CALLBACK WndProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 //OSから見たウィンドウプロシージャー（実際の処理はMAINクラスのプロシージャーで処理）
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	return g_pMain->MsgProc(hWnd, uMsg, wParam, lParam);
-}
+//LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+//{
+//	return g_pMain->MsgProc(hWnd, uMsg, wParam, lParam);
+//}
 //
 //MAIN::MAIN()
 //コンストラクタ
@@ -58,56 +64,56 @@ MAIN::~MAIN()
 //
 //HRESULT MAIN::InitWindow(HINSTANCE hInstance,
 //ウィンドウ作成
-HRESULT MAIN::InitWindow(HINSTANCE hInstance,
-	INT iX, INT iY, INT iWidth, INT iHeight, LPCWSTR WindowName)
-{
-	// ウィンドウの定義
-	WNDCLASSEX  wc;
-	ZeroMemory(&wc, sizeof(wc));
-	wc.cbSize = sizeof(wc);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-	wc.lpszClassName = WindowName;
-	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-	RegisterClassEx(&wc);
-	//ウィンドウの作成
-	m_hWnd = CreateWindow(WindowName, WindowName, WS_OVERLAPPEDWINDOW,
-		0, 0, iWidth, iHeight, 0, 0, hInstance, 0);
-	if (!m_hWnd)
-	{
-		return E_FAIL;
-	}
-	//ウインドウの表示
-	ShowWindow(m_hWnd, SW_SHOW);
-	UpdateWindow(m_hWnd);
-
-	return S_OK;
-}
+//HRESULT MAIN::InitWindow(HINSTANCE hInstance,
+//	INT iX, INT iY, INT iWidth, INT iHeight, LPCWSTR WindowName)
+//{
+//	//// ウィンドウの定義
+//	//WNDCLASSEX  wc;
+//	//ZeroMemory(&wc, sizeof(wc));
+//	//wc.cbSize = sizeof(wc);
+//	//wc.style = CS_HREDRAW | CS_VREDRAW;
+//	//wc.lpfnWndProc = WndProc;
+//	//wc.hInstance = hInstance;
+//	//wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+//	//wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+//	//wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+//	//wc.lpszClassName = WindowName;
+//	//wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+//	//RegisterClassEx(&wc);
+//	////ウィンドウの作成
+//	//m_hWnd = CreateWindow(WindowName, WindowName, WS_OVERLAPPEDWINDOW,
+//	//	0, 0, iWidth, iHeight, 0, 0, hInstance, 0);
+//	//if (!m_hWnd)
+//	//{
+//	//	return E_FAIL;
+//	//}
+//	////ウインドウの表示
+//	//ShowWindow(m_hWnd, SW_SHOW);
+//	//UpdateWindow(m_hWnd);
+//
+//	return S_OK;
+//}
 //
 //LRESULT MAIN::MsgProc(HWND hWnd,UINT iMsg,WPARAM wParam,LPARAM lParam)
 //ウィンドウプロシージャー
-LRESULT MAIN::MsgProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (iMsg)
-	{
-	case WM_KEYDOWN:
-		switch ((char)wParam)
-		{
-		case VK_ESCAPE:
-			PostQuitMessage(0);
-			break;
-		}
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	}
-	return DefWindowProc(hWnd, iMsg, wParam, lParam);
-}
+//LRESULT MAIN::MsgProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
+//{
+//	switch (iMsg)
+//	{
+//	case WM_KEYDOWN:
+//		switch ((char)wParam)
+//		{
+//		case VK_ESCAPE:
+//			PostQuitMessage(0);
+//			break;
+//		}
+//		break;
+//	case WM_DESTROY:
+//		PostQuitMessage(0);
+//		break;
+//	}
+//	return DefWindowProc(hWnd, iMsg, wParam, lParam);
+//}
 //
 //void MAIN::Loop()
 //メッセージループとアプリケーション処理の入り口
@@ -130,6 +136,8 @@ void MAIN::Loop()
 		}
 	}
 	//アプリケーションの終了
+	int a;
+	a = 0;
 }
 //
 //void MAIN::App()
@@ -141,7 +149,7 @@ void MAIN::App()
 //
 //HRESULT MAIN::InitD3D()
 //Direct3D初期化
-HRESULT MAIN::InitD3D()
+HRESULT MAIN::InitD3D(HWND hwmd)
 {
 	// デバイスとスワップチェーンの作成
 	DXGI_SWAP_CHAIN_DESC sd;
@@ -153,7 +161,7 @@ HRESULT MAIN::InitD3D()
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = m_hWnd;
+	sd.OutputWindow = hwmd;
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 	sd.Windowed = TRUE;
@@ -215,7 +223,7 @@ HRESULT MAIN::InitD3D()
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *pCompiledShader = NULL;
 	//バーテックスシェーダー作成
-	if (FAILED(MakeShader("Sprite2D_ColorKey.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader))) return E_FAIL;
+	if (FAILED(MakeShader("Source/Hlsl/Sprite2D_ColorKey.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader))) return E_FAIL;
 	//頂点インプットレイアウトを定義	
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
@@ -230,7 +238,7 @@ HRESULT MAIN::InitD3D()
 	}
 	SAFE_RELEASE(pCompiledShader);
 	//ピクセルシェーダー作成
-	if (FAILED(MakeShader("Sprite2D_ColorKey.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader))) return E_FAIL;
+	if (FAILED(MakeShader("Source/Hlsl/Sprite2D_ColorKey.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader))) return E_FAIL;
 	SAFE_RELEASE(pCompiledShader);
 	//コンスタントバッファー作成　ここでは変換行列渡し用
 	D3D11_BUFFER_DESC cb;
@@ -260,7 +268,7 @@ HRESULT MAIN::InitD3D()
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	m_pDevice->CreateSamplerState(&SamDesc, &m_pSampler);
 	//テクスチャー読み込み
-	if (FAILED(D3DX11CreateShaderResourceViewFromFile(m_pDevice, L"Smoke.png", NULL, NULL, &m_pTexture, NULL)))
+	if (FAILED(D3DX11CreateShaderResourceViewFromFile(m_pDevice, L"Resources/Smoke.png", NULL, NULL, &m_pTexture, NULL)))
 	{
 		MessageBoxA(0, "テクスチャーを読み込めません", "", MB_OK);
 		return E_FAIL;

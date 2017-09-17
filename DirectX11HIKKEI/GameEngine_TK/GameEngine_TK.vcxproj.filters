@@ -7,12 +7,38 @@
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MAIN.h" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{7886eb6a-3bf5-468b-bd5f-d30dbdf85aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\MAIN">
+      <UniqueIdentifier>{bcca64de-5dc0-4ff8-b050-2337e8538724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Hlsl">
+      <UniqueIdentifier>{19fea01c-a921-4e84-a4b2-0d86f34ee18a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\WindowManager">
+      <UniqueIdentifier>{6822120f-687e-47dd-9ae5-eb744ea9e1e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MAIN.cpp" />
+    <ClCompile Include="Source\MAIN\MAIN.cpp">
+      <Filter>Source\MAIN</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WindowManager\WindowManager.cpp">
+      <Filter>Source\WindowManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Sprite2D_ColorKey.hlsl" />
+    <ClInclude Include="Source\MAIN\MAIN.h">
+      <Filter>Source\MAIN</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\WindowManager\WindowManager.h">
+      <Filter>Source\WindowManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Source\Hlsl\Sprite2D_ColorKey.hlsl">
+      <Filter>Source\Hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
