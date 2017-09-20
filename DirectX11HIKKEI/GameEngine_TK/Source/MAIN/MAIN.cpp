@@ -10,8 +10,8 @@
 
 #include "MAIN.h"
 //グローバル変数
-MAIN* g_pMain = NULL;
-std::unique_ptr<WindowManager> g_pWM;
+std::unique_ptr<MAIN> g_pMain = nullptr;
+std::unique_ptr<WindowManager> g_pWM = nullptr;
 //関数プロトタイプの宣言
 //LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //
@@ -19,9 +19,9 @@ std::unique_ptr<WindowManager> g_pWM;
 //アプリケーションのエントリー関数 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, INT)
 {
-	g_pMain = new MAIN;
+	g_pMain = std::make_unique<MAIN>();
 	g_pWM = std::make_unique<WindowManager>();
-	if (g_pMain != NULL)
+	if (g_pMain && g_pWM)
 	{
 		if (SUCCEEDED(g_pWM->Initialize(hInstance, 0, 0, WINDOW_WIDTH,
 			WINDOW_HEIGHT, APP_NAME)))
@@ -30,14 +30,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, INT)
 			{
 				g_pMain->Loop();
 			}
-			//通ってない
-			int a;
-			a = 0;
 		}
 		//アプリ終了
 		g_pMain->DestroyD3D();
-		delete g_pMain;
-		//delete g_pWM;
 	}
 	return 0;
 }
@@ -61,60 +56,6 @@ MAIN::MAIN()
 MAIN::~MAIN()
 {
 }
-//
-//HRESULT MAIN::InitWindow(HINSTANCE hInstance,
-//ウィンドウ作成
-//HRESULT MAIN::InitWindow(HINSTANCE hInstance,
-//	INT iX, INT iY, INT iWidth, INT iHeight, LPCWSTR WindowName)
-//{
-//	//// ウィンドウの定義
-//	//WNDCLASSEX  wc;
-//	//ZeroMemory(&wc, sizeof(wc));
-//	//wc.cbSize = sizeof(wc);
-//	//wc.style = CS_HREDRAW | CS_VREDRAW;
-//	//wc.lpfnWndProc = WndProc;
-//	//wc.hInstance = hInstance;
-//	//wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-//	//wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-//	//wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-//	//wc.lpszClassName = WindowName;
-//	//wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-//	//RegisterClassEx(&wc);
-//	////ウィンドウの作成
-//	//m_hWnd = CreateWindow(WindowName, WindowName, WS_OVERLAPPEDWINDOW,
-//	//	0, 0, iWidth, iHeight, 0, 0, hInstance, 0);
-//	//if (!m_hWnd)
-//	//{
-//	//	return E_FAIL;
-//	//}
-//	////ウインドウの表示
-//	//ShowWindow(m_hWnd, SW_SHOW);
-//	//UpdateWindow(m_hWnd);
-//
-//	return S_OK;
-//}
-//
-//LRESULT MAIN::MsgProc(HWND hWnd,UINT iMsg,WPARAM wParam,LPARAM lParam)
-//ウィンドウプロシージャー
-//LRESULT MAIN::MsgProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
-//{
-//	switch (iMsg)
-//	{
-//	case WM_KEYDOWN:
-//		switch ((char)wParam)
-//		{
-//		case VK_ESCAPE:
-//			PostQuitMessage(0);
-//			break;
-//		}
-//		break;
-//	case WM_DESTROY:
-//		PostQuitMessage(0);
-//		break;
-//	}
-//	return DefWindowProc(hWnd, iMsg, wParam, lParam);
-//}
-//
 //void MAIN::Loop()
 //メッセージループとアプリケーション処理の入り口
 void MAIN::Loop()

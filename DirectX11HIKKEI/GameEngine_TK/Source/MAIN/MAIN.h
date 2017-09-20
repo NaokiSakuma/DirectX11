@@ -54,8 +54,6 @@ public:
 	//デストラクタ
 	~MAIN();
 
-	//HRESULT InitWindow(HINSTANCE, INT, INT, INT, INT, LPCWSTR);
-	//LRESULT MsgProc(HWND, UINT, WPARAM, LPARAM);
 	HRESULT InitD3D(HWND);
 	HRESULT InitModel();
 	HRESULT MakeShader(LPSTR, LPSTR, LPSTR, void**, ID3DBlob**);
